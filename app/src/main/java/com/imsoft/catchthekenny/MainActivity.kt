@@ -1,11 +1,15 @@
 package com.imsoft.catchthekenny
 
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import com.imsoft.catchthekenny.databinding.ActivityMainBinding
 import java.util.Random
 
@@ -34,6 +38,38 @@ class MainActivity : AppCompatActivity() {
         imageArray.add(binding.imageView9)
 
         showKenny()
+
+
+
+        object : CountDownTimer(16000,1000) {
+            override fun onFinish() {
+
+                binding.timeView.text = "Time: 0"
+                handler.removeCallbacks(runnable)
+
+                for (kenny in imageArray) {
+                    kenny.visibility = View.INVISIBLE
+                }
+
+                val alert = AlertDialog.Builder(this@MainActivity)
+
+                alert.setTitle("Game Over")
+                alert.setMessage("Restart Game")
+                alert.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
+                    finish()
+                    startActivity(intent)
+                })
+
+                alert.setNegativeButton("No", null)
+
+                alert.show()
+
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+                binding.timeView.text = "Time: ${millisUntilFinished/1000}"
+            }
+        }.start()
 
     }
 
